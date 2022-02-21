@@ -21,6 +21,7 @@ async function run(){
     await client.connect()
     const dataBase = client.db('triptoRadhuni')
     const productsCollection = dataBase.collection('products')
+    const addressCollection = dataBase.collection('address')
     const usersCollection = dataBase.collection('users')
     
     const myColl =[
@@ -46,6 +47,13 @@ async function run(){
         const result = await productsCollection.insertOne(product)
         res.json(result)
     })
+    // post Shipping Address 
+    app.post('/shipping', async(req, res) =>{
+        const address = req.body;
+        const result = await addressCollection.insertOne(address)
+        res.json(result)
+    })
+
     // get api chekc if the user is a admin
     app.get('/users/:email', async(req, res) =>{
         const email = req.params.email
