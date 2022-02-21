@@ -21,6 +21,7 @@ async function run(){
     await client.connect()
     const dataBase = client.db('triptoRadhuni')
     const productsCollection = dataBase.collection('products')
+    const usersCollection = dataBase.collection('users')
     
     const myColl =[
         {id:1, name:'show', addres:"shit"}
@@ -37,16 +38,49 @@ async function run(){
         const id = req.params.id
         const query = {_id: ObjectId(id)}
         const product = await productsCollection.findOne(query)
-        console.log(id)
         res.send(product)
     })
-
-
-    // //post  API
+    //post  product 
     app.post('/products', async(req, res) =>{
         const product = req.body;
-        console.log('hit the post api', product)
         const result = await productsCollection.insertOne(product)
+        res.json(result)
+    })
+    // get api chekc if the user is a admin
+    app.get('/users/:email', async(req, res) =>{
+        const email = req.params.email
+        const query = {email:email}
+        const user = await usersCollection.findOne(query)
+        let isAdmin =false
+        if(user?.role === "admin"){
+            isAdmin= true;
+        }
+        res.json({admin: isAdmin})
+    })
+
+    // Post Users register
+    app.post('/users', async(req, res) => {
+        const user = req.body;
+        const result = await usersCollection.insertOne(user)
+        res.json(result)
+        console.log(result)
+    })
+
+    // Post Users with google 
+    app.put('/users', async(req, res)=> {
+        const user = req.body;
+        const filter = {email: user.email}
+        const options = {upsert: true}
+        const updateDoc = {$set: user}
+        const result = usersCollection.updateOne(filter, updateDoc, options)
+        res.json(result)
+    });
+
+    app.put('/users/admin', async(req, res) =>{
+        const user = req.body;
+        const filter = {email: user.email}
+        const updateDoc = {$set:{role:'admin'}}
+        const result = await usersCollection.updateOne(filter, updateDoc)
         res.json(result)
     })
 
