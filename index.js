@@ -50,7 +50,8 @@ async function run(){
     // post Shipping Address 
     app.post('/shipping', async(req, res) =>{
         const address = req.body;
-        const result = await addressCollection.insertOne(address)
+        const updateDoc = {$set:{date: new Date()}} 
+        const result = await addressCollection.insertOne(address, updateDoc)
         res.json(result)
     })
 
