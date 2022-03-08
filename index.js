@@ -23,6 +23,7 @@ async function run(){
     const productsCollection = dataBase.collection('products')
     const addressCollection = dataBase.collection('address')
     const usersCollection = dataBase.collection('users')
+    const ordersCollection = dataBase.collection('orders')
     
     const myColl =[
         {id:1, name:'show', addres:"shit"}
@@ -34,24 +35,67 @@ async function run(){
         const products = await cursor.toArray()
         res.send(products)
     })
-    //get API
+
+     // Get all order list 
+     app.get('/orderslist', async(req, res) =>{
+        const cursor = ordersCollection.find({})
+        const ordersList = await cursor.toArray()
+        res.send(ordersList)
+    })
+
+    //get product 
     app.get("/products/:id", async (req, res) =>{
         const id = req.params.id
         const query = {_id: ObjectId(id)}
         const product = await productsCollection.findOne(query)
         res.send(product)
     })
+
+
+
+    //get shipping address 
+    app.get("/shippingaddress/:email", async (req, res) =>{
+        const email = req.params.email
+        const query = {email:email}
+        const address = await addressCollection.findOne(query)
+        res.send(address)
+    })
+
+    // upsesert data 
+
+    app.put("/shippingaddress", async (req, res) =>{
+        const user = req.body
+        const query = {email: user.email}
+        const options = {upsert:true}
+        const updateDoc = {$set:user}
+        const address = await addressCollection.updateOne(query, updateDoc, options )
+        res.send(address)
+    })
+
     //post  product 
     app.post('/products', async(req, res) =>{
         const product = req.body;
         const result = await productsCollection.insertOne(product)
         res.json(result)
     })
+
+    //post new orders 
+    app.post('/placeOrder', async(req, res) => {
+      const orders = req.body;
+      orders.createdAt = new Date()
+      orders.confirmed = false
+      orders.shippedAt=''
+      orders.deliveredAt= ''
+      const result = await ordersCollection.insertOne(orders)
+      res.json(result)
+    })
+
+   
+
     // post Shipping Address 
     app.post('/shipping', async(req, res) =>{
         const address = req.body;
-        const updateDoc = {$set:{date: new Date()}} 
-        const result = await addressCollection.insertOne(address, updateDoc)
+        const result = await addressCollection.insertOne(address)
         res.json(result)
     })
 
@@ -84,6 +128,25 @@ async function run(){
         const result = usersCollection.updateOne(filter, updateDoc, options)
         res.json(result)
     });
+
+    // update all orders list 
+    app.put("/orderslist/:id", async (req, res) =>{
+        const id = req.params.id
+        const updateOrder = req.body;
+        const filter = {_id:ObjectId(id)}
+        const options = {upsert:true};
+        const updateDoc = {
+            $set:{
+                confirmed: updateOrder.confirmed,
+                shippedAt:updateOrder.shippedAt,
+                deliveredAt: updateOrder.deliveredAt
+            }
+        }
+        const result = await ordersCollection.updateOne(filter, updateDoc, options)
+        
+        res.json(result)
+
+    })
 
     app.put('/users/admin', async(req, res) =>{
         const user = req.body;
