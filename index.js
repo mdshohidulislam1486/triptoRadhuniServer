@@ -130,7 +130,7 @@ async function run(){
     });
 
     // update all orders list 
-    app.put("/orderslist/:id", async (req, res) =>{
+   /*  app.put("/orderslist/:id", async (req, res) =>{
         const id = req.body.id
         const updateOrder = req.body;
         const filter = {_id:ObjectId(id)}
@@ -139,7 +139,7 @@ async function run(){
         
         res.json(result)
 
-    })
+    }) */
 
     app.put('/users/admin', async(req, res) =>{
         const user = req.body;
