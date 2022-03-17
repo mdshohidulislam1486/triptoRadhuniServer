@@ -131,8 +131,8 @@ async function run(){
 
     // update all orders list 
     app.put("/orderslist/:id", async (req, res) =>{
-        const id = req.params.id
-        const updateOrder = req.body;
+        const id = req.body.id
+        const updateOrder = req.body.newProduct;
         const filter = {_id:ObjectId(id)}
         const options = {upsert:true};
         const updateDoc = {
