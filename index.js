@@ -84,8 +84,8 @@ async function run(){
       const orders = req.body;
       orders.createdAt = new Date()
       orders.confirmed = false
-      orders.shippedAt=''
-      orders.deliveredAt= ''
+      orders.shippedAt=false
+      orders.deliveredAt= false
       const result = await ordersCollection.insertOne(orders)
       res.json(result)
     })
@@ -130,16 +130,21 @@ async function run(){
     });
 
     // update all orders list 
-   /*  app.put("/orderslist/:id", async (req, res) =>{
-        const id = req.body.id
-        const updateOrder = req.body;
-        const filter = {_id:ObjectId(id)}
-        const options = {upsert:true};
-        const result = await ordersCollection.updateOne(filter, options)
+    app.put("/orderslist/:id", async (req, res) =>{
         
+        const id = req.params.id;
+        const order = req.body;
+        const options = {upsert:true}
+        const filter = { _id: ObjectId(id) };
+        const updateDoc = {
+            $set: {
+                order: order
+            }
+        };
+        const result = await ordersCollection.updateOne(filter, updateDoc, options);
         res.json(result)
 
-    }) */
+    })
 
     app.put('/users/admin', async(req, res) =>{
         const user = req.body;
