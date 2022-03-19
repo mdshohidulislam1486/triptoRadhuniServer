@@ -92,7 +92,7 @@ async function run(){
 
    
 
-    // post Shipping Address 
+    // post Shipping Address
     app.post('/shipping', async(req, res) =>{
         const address = req.body;
         const result = await addressCollection.insertOne(address)
@@ -137,7 +137,9 @@ async function run(){
         const filter = { _id: ObjectId(id) };
         const options = {upsert:true}
         const updateDoc = {
-            $set:orders
+            $set:{
+                orders:[...orders]
+            }
         };
         const result = await ordersCollection.updateOne( filter, updateDoc, options);
         res.json(result)
