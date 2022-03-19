@@ -133,15 +133,13 @@ async function run(){
     app.put("/orderslist/:id", async (req, res) =>{
         
         const id = req.params.id;
-        const order = req.body;
-        const options = {upsert:true}
+        const orders = req.body;
         const filter = { _id: ObjectId(id) };
+        const options = {upsert:true}
         const updateDoc = {
-            $set: {
-                order: order
-            }
+            $set:orders
         };
-        const result = await ordersCollection.updateOne(filter, updateDoc, options);
+        const result = await ordersCollection.updateOne( filter, updateDoc, options);
         res.json(result)
 
     })
