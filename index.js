@@ -42,7 +42,7 @@ async function run(){
         const ordersList = await cursor.toArray()
         res.send(ordersList)
     })
-
+ 
     //get product 
     app.get("/products/:id", async (req, res) =>{
         const id = req.params.id
@@ -69,7 +69,7 @@ async function run(){
         const options = {upsert:true}
         const updateDoc = {$set:user}
         const address = await addressCollection.updateOne(query, updateDoc, options )
-        res.send(address)
+        res.send(address) 
     })
 
     //post  product 
@@ -87,7 +87,7 @@ async function run(){
       orders.shippedAt=false
       orders.deliveredAt= false
       const result = await ordersCollection.insertOne(orders)
-      res.json(result)
+      res.json(result) 
     })
 
    
@@ -109,7 +109,7 @@ async function run(){
             isAdmin= true;
         }
         res.json({admin: isAdmin})
-    })
+    }) 
 
     // Post Users register
     app.post('/users', async(req, res) => {
@@ -117,11 +117,11 @@ async function run(){
         const result = await usersCollection.insertOne(user)
         res.json(result)
         console.log(result)
-    })
+    }) 
 
     // Post Users with google 
     app.put('/users', async(req, res)=> {
-        const user = req.body;
+        const user = req.body; 
         const filter = {email: user.email}
         const options = {upsert: true}
         const updateDoc = {$set: user}
@@ -129,21 +129,17 @@ async function run(){
         res.json(result)
     });
 
-    // update all orders list 
-    app.put("/orderslist/:id", async (req, res) =>{
-        
+    // update all orders list  
+    app.put("/orderslist/:id",  (req, res) =>{
         const id = req.params.id;
         const orders = req.body;
         const filter = { _id: ObjectId(id) };
-        const options = {upsert:true}
         const updateDoc = {
-            $set:{
-                orders:[...orders]
-            }
+            $set:{confirmed:orders.confirmed}
         };
-        const result = await ordersCollection.updateOne( filter, updateDoc, options);
+        const result =  ordersCollection.updateOne(filter, updateDoc);
         res.json(result)
-
+          
     })
 
     app.put('/users/admin', async(req, res) =>{
