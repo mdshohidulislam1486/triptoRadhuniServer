@@ -28,14 +28,24 @@ async function run(){
     const myColl =[
         {id:1, name:'show', addres:"shit"}
     ]
-
+ 
     //get API
     app.get("/products", async(req, res) =>{
+        console.log(req.query)
         const cursor = productsCollection.find({})
-        const products = await cursor.toArray()
-        res.send(products)
-    })
-
+        const page = req.query.page;
+        const size = parseInt(req.query.size);
+        let products;
+        const count = await cursor.count();
+        if(page){
+        products = await cursor.skip(page*size).limit(size).toArray()
+        }else{
+         products = await cursor.toArray()
+        }
+        
+        res.send({count, products})
+    }) 
+ 
      // Get all order list 
      app.get('/orderslist', async(req, res) =>{
         const cursor = ordersCollection.find({})
@@ -52,7 +62,7 @@ async function run(){
     })
 
 
-
+ 
     //get shipping address 
     app.get("/shippingaddress/:email", async (req, res) =>{
         const email = req.params.email
@@ -135,7 +145,11 @@ async function run(){
         const orders = req.body;
         const filter = { _id: ObjectId(id) };
         const updateDoc = {
-            $set:{confirmed:orders.confirmed}
+            $set:{
+                confirmed:orders?.confirmed,
+                shippedAt:orders?.shippedAt,
+                deliveredAt:orders?.deliveredAt
+            }
         };
         const result =  ordersCollection.updateOne(filter, updateDoc);
         res.json(result)
