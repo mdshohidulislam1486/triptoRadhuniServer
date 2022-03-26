@@ -127,7 +127,7 @@ async function run(){
         const updateDoc = {$set: user}
         const result = usersCollection.updateOne(filter, updateDoc, options)
         res.json(result)
-    });
+    }); 
 
     // update all orders list  
     app.put("/orderslist/:id",  (req, res) =>{
