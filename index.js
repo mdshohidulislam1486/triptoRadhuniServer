@@ -42,8 +42,11 @@ async function run(){
         }else{
          products = await cursor.toArray()
         }
-        
-        res.send({count, products})
+         
+        res.send({
+            count,
+             products
+            })
     }) 
  
      // Get all order list 
@@ -87,7 +90,7 @@ async function run(){
         const product = req.body;
         const result = await productsCollection.insertOne(product)
         res.json(result)
-    })
+    }) 
 
     //post new orders 
     app.post('/placeOrder', async(req, res) => {
