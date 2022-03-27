@@ -51,7 +51,6 @@ async function run(){
         const cursor = productsCollection.find({});
          const products = await cursor.toArray()
          res.send(products)
-         console.log(products)
     })
      // Get all order list 
      app.get('/orderslist', async(req, res) =>{
