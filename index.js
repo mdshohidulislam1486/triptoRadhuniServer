@@ -27,31 +27,33 @@ async function run(){
     
  
     //get API
-    /* app.get("/products", async (req, res) =>{
-        console.log(req.query)
+     app.get("/products", async (req, res) =>{
+       console.log(req.query)
         const cursor = productsCollection.find({});
         const page = req.query.page;
         const size = parseInt(req.query.size);
         let products;
         const count = await cursor.count();
-        console.log(count)
         if(page){
         products = await cursor.skip(page * size).limit(size).toArray()
         }else{
          products = await cursor.toArray()
         }
-          
+        
         res.send({
             count,
              products
-            })
-    })  */
+            }) 
+    })  
  
-    app.get("/products", async (req, res) =>{
+   /*  app.get("/products", async (req, res) =>{
         const cursor = productsCollection.find({});
-         const products = await cursor.toArray()
+         const products = await cursor.limit(8).toArray()
          res.send(products)
     })
+
+ */
+
      // Get all order list 
      app.get('/orderslist', async(req, res) =>{
         const cursor = ordersCollection.find({})
