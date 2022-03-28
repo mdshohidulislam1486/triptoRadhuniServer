@@ -35,7 +35,7 @@ async function run(){
         const count = await cursor.count();
         let products;
         if(page){
-        products = await cursor.skip(page * size).limit(size).pretty() 
+        products = await cursor.skip(page * size).limit(size).toArray()
         }else{
          products = await cursor.toArray()
         }
