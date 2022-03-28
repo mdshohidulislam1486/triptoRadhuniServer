@@ -32,10 +32,10 @@ async function run(){
         const cursor = productsCollection.find({});
         const page = req.query.page;
         const size = parseInt(req.query.size);
-        let products;
         const count = await cursor.count();
+        let products;
         if(page){
-        products = await cursor.skip(page * size).limit(size).toArray()
+        products = await cursor.skip(page*size).limit(size).toArray()
         }else{
          products = await cursor.toArray()
         }
